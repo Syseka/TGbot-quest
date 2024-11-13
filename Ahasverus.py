@@ -1,9 +1,8 @@
+# third.py
 #Quest-bot
 
-tkn = ''
-# Token from BotFather.
-
 import telebot
+from AgaspherTKN import tkn
 from telebot import types
 # Импорт библиотеки telebot, в котором есть функционал для создания ТГ-бота.
 bot = telebot.TeleBot(tkn)
@@ -26,8 +25,16 @@ def main_task_buttons():
     markup.add(itembtn1, itembtn2, itembtn3)
     return markup
 
-def generate_list_task_markup():
-# Кнопки при нажатии "Список задач".
+def generate_list_shop(): # "Покупки"
+# Можно сразу выводить список покупок.
+    markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+    itembtn1 = types.KeyboardButton('Дополнить список✏')
+    itembtn2 = types.KeyboardButton('Убрать позицию💸')
+    itembtn3 = types.KeyboardButton('Назад🔙')
+    markup.add(itembtn1,itembtn2,itembtn3)
+    return markup
+
+def generate_list_task_markup(): # "Список задач".
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
     itembtn1 = types.KeyboardButton('Отметить выполненное✅')
     itembtn2 = types.KeyboardButton('Назад🔙')
@@ -45,9 +52,9 @@ def send_welcome(message):
 # Получается, можно взаимодействовать с ботом без кнопок.
 def handle_text(message):
     if message.text == 'Покупки🛒':
-        #markup = generate_list_shop()
-        #bot.send_message(message.chat.id, 'Меню покупок:', reply_markup=markup)
-        bot.send_message(message.chat.id, 'Меню покупок: Пока не готово.')
+        markup = generate_list_shop()
+        bot.send_message(message.chat.id, 'Список покупок:', reply_markup=markup)
+        #bot.send_message(message.chat.id, 'Меню покупок: /f Пока не готово.')
     elif message.text == 'Задачи💼':
         markup = main_task_buttons()
         bot.send_message(message.chat.id,'Меню задач:',reply_markup=markup)
