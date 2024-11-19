@@ -2,12 +2,28 @@
 #Quest-bot
 
 import telebot
-from AgaspherTKN import tkn
+import mysql.connector
+from AgaspherTKN import tkn, userDB, passDB, nameDBp, hostDB, nameTable
 from telebot import types
 # Импорт библиотеки telebot, в котором есть функционал для создания ТГ-бота.
 bot = telebot.TeleBot(tkn)
 # Создается объект BOT из класса TeleBot. Он использует один параметр
 # в котором передан API бота.
+
+mydb = mysql.connector.connect(
+    host = hostDB,
+    user = userDB,
+    password = passDB,
+    database = nameDBp)
+
+mycursor = mydb.cursor()
+
+def add_purchase(user_id, product_name):
+    sql = "INSERT INTO purchares_list (user_id, product_name) VALUES (%s,%s)"
+    val = (user_id, product_name)
+    mycursor.execute(sql,val)
+    
+
 
 def main_buttons():
 # Создает две кнопки, которые форматируются под размер экрана. 
@@ -51,10 +67,21 @@ def send_welcome(message):
 # Ожидания текста от юзера. Этот текст совпадает с тем, что передают созданные ранее кнопки.
 # Получается, можно взаимодействовать с ботом без кнопок.
 def handle_text(message):
+    #покупки
     if message.text == 'Покупки🛒':
         markup = generate_list_shop()
         bot.send_message(message.chat.id, 'Список покупок:', reply_markup=markup)
-        #bot.send_message(message.chat.id, 'Меню покупок: /f Пока не готово.')
+
+    elif message.text == 'Дополнить список✏':
+        
+        markup = main_task_buttons()
+        bot.send_message(message.chat.id,'Что требуется купить?',reply_markup=markup)
+        
+    elif message.text == 'Убрать позицию💸':
+        markup = main_task_buttons()
+        bot.send_message(message.chat.id,'Меню задач:',reply_markup=markup)
+    
+    #задачи    
     elif message.text == 'Задачи💼':
         markup = main_task_buttons()
         bot.send_message(message.chat.id,'Меню задач:',reply_markup=markup)
